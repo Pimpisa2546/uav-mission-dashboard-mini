@@ -1,0 +1,12 @@
+.mission-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.mission-table th,
+.mission-table td {
+  padding: 10px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+}
