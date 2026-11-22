@@ -65,7 +65,7 @@ export const MissionTable: React.FC = () => {
     };
 
     useEffect(() => {
-        fetchDataError();
+        fetchData();
     }, []);
 
     useEffect(() => {
@@ -226,7 +226,7 @@ export const MissionTable: React.FC = () => {
             </div>
 
             {/* ส่วนตาราง */}
-            <div style={{ margin: "10px auto", padding: "0 24px", overflowX: "auto" }}>
+            <div className="table-scroll-wrapper" style={{ margin: "10px auto", padding: "0 24px"}}>
                 <table className="mission-table">
                     <thead style={{ backgroundColor: "#c0c0c0" }}>
                         <tr>
