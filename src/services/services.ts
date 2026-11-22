@@ -1,4 +1,4 @@
-import {mockData} from "@/component/data/mockMissions";
+import { mockData } from "@/component/data/mockMissions";
 import { Mission } from "@/interface/interface";
 
 let missionsData: Mission[] = [...mockData]
@@ -19,8 +19,17 @@ export async function getAllMissions(shouldError = false): Promise<Mission[]> {
   return [...missionsData];
 }
 
+export async function getMissionById(
+  id: string | number,
+  shouldError = false
+): Promise<Mission | null> {
+  const list = await getAllMissions(shouldError);
+  const found = list.find((item) => String(item.id) === String(id));
+  return found ?? null;
+}
+
 export async function addMission(newItem: Mission): Promise<Mission> {
-  await wait(2000); 
+  await wait(2000);
   missionsData.unshift(newItem);
   return newItem;
 }
