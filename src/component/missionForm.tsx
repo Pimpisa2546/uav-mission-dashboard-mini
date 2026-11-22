@@ -112,7 +112,7 @@ export const MissionForm: React.FC<MissionFormProps> = ({ onCreate, defaultData,
         }
         const payload = {
             id: defaultData ? defaultData.id : Date.now(),
-            idMission: defaultData ? defaultData.idMission : `MNS-${Date.now()}`,
+            idMission: defaultData ? defaultData.idMission : `MSN-${Date.now()}`,
             missionName: missionName,
             drone: droneSelect,
             startAt: startAt,
@@ -163,7 +163,7 @@ export const MissionForm: React.FC<MissionFormProps> = ({ onCreate, defaultData,
         <div style={{ position: "relative" }}>
             {/* ปุ่มปิด */}
             <div style={{ position: "sticky", top: "0px", display: "flex", justifyContent: "flex-end", zIndex: 10, backgroundColor: "#ffffff", padding: "10px" }}>
-                <button type="button" onClick={handleCancel}>X</button>
+                <button type="button"className="btn" style={{backgroundColor:"transparent",cursor:"pointer",border:"0px",fontSize:"15px"}} onClick={handleCancel}>X</button>
             </div>
             {/* กล่องForm */}
             <div style={{ display: "flex", justifyContent: "center", padding: "15px" }}>
@@ -292,7 +292,7 @@ export const MissionForm: React.FC<MissionFormProps> = ({ onCreate, defaultData,
                         <div style={{ display: "flex", flex: "0.25", flexDirection: "column" }}>
                             <label htmlFor="status">สถานะ</label>
                             <select id="status" value={statusSelect} onChange={(e) => setStatusSelect(e.target.value as MissionStatus | "")}
-                                style={{ color: statusSelect === "" ? "#9ca3af" : "#111827" }}
+                                style={{ color: statusSelect === "" ? "#9ca3af" : "#111827" ,borderRadius:"5px"}}
                                 aria-invalid={submitted && statusSelect === ""}
                                 aria-describedby={submitted && statusSelect === "" ? "status-error" : undefined}
                             >
