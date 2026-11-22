@@ -1,0 +1,13 @@
+.btn-spiner{
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #a0b1c7;
+    animation: btn-spiner 0.8s linear infinite;
+}
+
+ @keyframes btn-spiner {
+        from {transform: rotate(0deg);} to {transform: rotate(360deg);}
+    }
