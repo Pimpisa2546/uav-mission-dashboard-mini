@@ -10,7 +10,7 @@ function wait(ms = 500): Promise<void> {
 }
 
 export async function getAllMissions(shouldError = false): Promise<Mission[]> {
-  await wait(500);
+  await wait(2000);
 
   if (shouldError) {
     throw new Error("โหลดข้อมูลภารกิจไม่สำเร็จ");

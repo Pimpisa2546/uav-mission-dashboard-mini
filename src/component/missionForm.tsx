@@ -321,15 +321,15 @@ export const MissionForm: React.FC<MissionFormProps> = ({ onCreate, defaultData,
                     <div style={{
                         display: "flex", justifyContent: "end", alignItems: "center", gap: "8px", position: "sticky", bottom: "0px", backgroundColor: "#fff", zIndex: 10, height: "35px"
                     }}>
-                        <button type="button" onClick={handleCancel} style={{ border: "1px solid #d1d5db", height: "30px" }}>
+                        <button type="button" onClick={handleCancel} className="btn" style={{ border: "1px solid #d1d5db", height: "30px" }}>
                             ยกเลิก
                         </button>
-                        <button type="submit" disabled={isSubmiting}
+                        <button type="submit" disabled={isSubmiting} className="btn"
                             style={{
                                 backgroundColor: isSubmiting ? "#7c99ee" : "#4169e1", color: "white", width: "120px", height: "30px", border: "none",
                                 cursor: isSubmiting ? "not-allowed" : "pointer",
                             }}>
-                            {isSubmiting ? (<><span className="btn-spiner" aria-hidden="true"></span><span>กำลังบันทึก</span></>) : ("บันทึก")}
+                            {isSubmiting ? (<div style={{display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px",}}><span className="btn-spiner" aria-hidden="true"/><span>กำลังบันทึก</span></div>) : ("บันทึก")}
                         </button>
                     </div>
                 </form>

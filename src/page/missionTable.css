@@ -3,7 +3,6 @@
   table-layout: fixed;
   border-collapse: collapse;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  border-radius: 10px;
 }
 
 .mission-table th,
@@ -11,7 +10,13 @@
   padding: 10px;
   text-align: center;
   border: 1px solid #e5e7eb;
+  overflow-wrap: anywhere;
 }
+
+.mission-table td {
+  font-size: 14px;
+}
+
 
 .statusBadge--planned {
   display: inline-block;
@@ -51,12 +56,64 @@
 
 .row {
   display: flex;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 15px;
   align-items: flex-start;
 }
 
 .col {
   display: flex;
-  flex: 1;
+  flex: 1 1 200px;
+  min-width: 0;
   flex-direction: column;
+
+}
+
+.col--sort {
+  flex: 0.6 1 160px;
+}
+
+@media (max-width: 768px) {
+
+  .col,
+  .col--sort {
+    flex: 1 1 calc(50% - 12px);
+  }
+}
+
+@media (max-width: 480px) {
+
+  .col,
+  .col--sort {
+    flex: 1 1 100%;
+  }
+}
+
+.btn {
+  padding: 6px 10px;
+  cursor: pointer;
+  border: 1px solid;
+  border-radius: 6px;
+}
+
+
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.skeleton {
+  height: 16px;
+  width: 120px;
+  background-color: #e5e7eb;
+  border-radius: 4px;
+  animation: pulse 1.4s ease-in-out infinite;
 }

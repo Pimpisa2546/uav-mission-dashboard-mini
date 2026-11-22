@@ -28,6 +28,8 @@ export const MissionTable: React.FC = () => {
     const [selectStatus, setSelectStatus] = useState<string[]>(defaultStatus);
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">(defaultSort);
 
+    const [errorData, setErrorData] = useState<boolean>(false);
+
     const [openModal, setOpenModal] = useState<boolean>(false);
 
     const [editingMission, setEditingMission] = useState<Mission | null>(null);
@@ -35,19 +37,35 @@ export const MissionTable: React.FC = () => {
     const status_option = ["planned", "in-progress", "completed", "failed"];
 
     const fetchData = async () => {
+        setErrorData(false);
         setLoading(true);
         try {
             const dataMission = await getAllMissions();
             setMissionData(dataMission);
         } catch (err) {
             console.error(err);
+            setErrorData(true);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchDataError = async () => {
+        setErrorData(false);
+        setLoading(true);
+        try {
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+            throw new Error("mock network error");
+        } catch (err) {
+            console.error(err);
+            setErrorData(true);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchData();
+        fetchDataError();
     }, []);
 
     useEffect(() => {
@@ -105,10 +123,10 @@ export const MissionTable: React.FC = () => {
 
     const handlePrevPage = () => {
         setCurrentPage((prev) => Math.max(1, prev - 1))
-    }
+    };
     const handleNextPage = () => {
         setCurrentPage((next) => (Math.min(totalPages, next + 1)));
-    }
+    };
 
     useEffect(() => {
         const params = new URLSearchParams();
@@ -133,17 +151,17 @@ export const MissionTable: React.FC = () => {
     const closeModal = () => {
         setOpenModal(false);
         setEditingMission(null);
-    }
+    };
 
     const handleAddMission = (newMission: Mission) => {
         setMissionData((prev) => [newMission, ...prev])
         closeModal();
-    }
+    };
 
     const handleEditMission = (update: Mission) => {
         setMissionData((prev) => prev.map((item) => (item.id === update.id ? update : item)))
         closeModal();
-    }
+    };
 
     function formatDuration(totalSec: number): string {
         const durationSec = Math.max(0, Math.floor(totalSec));
@@ -159,24 +177,23 @@ export const MissionTable: React.FC = () => {
         if (sec > 0) parts.push(`${sec}s`);
 
         return parts.length > 0 ? parts.join(" ") : "0s";
-    }
+    };
+
+    const resetFilter = () => {
+        setSearch("");
+        setDebounce("");
+        setSelectStatus([]);
+        setCurrentPage(1);
+    };
 
     return (
         <>
             {/* ส่วนค้นหาและการกรอง และเพิ่มภารกิจ */}
-            <div className="row" style={{ padding: "10px" }}>
-                <div className="col">
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", }}>
-                        {status_option.map((item) => (
-                            <label key={item} style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                                <input type="checkbox" checked={selectStatus.includes(item)} onChange={() => handleSelectStatus(item)} />
-                                <span>{item}</span>
-                            </label>
-                        ))}
-                    </div>
-                </div>
-                <div className="col">
-                    <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+            <div className="row"
+                style={{ display: "flex", flexWrap: "wrap", backgroundColor: "#f9fafb", margin: "10px 24px", alignItems: "center", padding: "12px 24px", border: "1px solid #e5e7eb", }}
+            >
+                <div className="col" style={{ flex: "0 0 auto" }}>
+                    <div style={{ display: "inline-flex", gap: "5px", alignItems: "center" }}>
                         <input type="radio" id="desc" name="sortOrder" onChange={() => setSortOrder("desc")} checked={sortOrder === "desc"} />
                         <label htmlFor="desc">ใหม่เก่า</label>
 
@@ -184,19 +201,32 @@ export const MissionTable: React.FC = () => {
                         <label htmlFor="asc">เก่าใหม่</label>
                     </div>
                 </div>
-                <div className="col">
+                <div className="col" style={{ flex: "1 1 220px" }}>
                     <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="ค้นหาชื่อภารกิจ/โดรน"
-                        style={{ padding: "6px 10px", borderRadius: "6px", border: "1px solid #d1d5db", width: "100%" }}
+                        style={{ display: "flex", padding: "6px 10px", borderRadius: "6px", border: "1px solid #d1d5db", width: "100%", boxSizing: "border-box", }}
                     />
                 </div>
-                <div className="col" style={{ alignItems: "flex-end" }}>
+                <div className="col">
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", }}>
+                        {status_option.map((item) => (
+                            <label key={item} style={{ display: "inline-flex", alignItems: "center", gap: "4px", whiteSpace: "nowrap", }}>
+                                <input type="checkbox" checked={selectStatus.includes(item)} onChange={() => handleSelectStatus(item)} />
+                                <span>{item}</span>
+                            </label>
+                        ))}
+                    </div>
+                </div>
+                <div className="col" style={{ boxSizing: "border-box" }}>
                     <button type="button" onClick={() => { setOpenModal(true); setEditingMission(null); }}
-                        style={{ padding: "6px 14px", borderRadius: "6px", cursor: "pointer" }}>เพิ่มภารกิจ</button>
+                        className="btn"
+                        style={{ border: "1px solid #111827", backgroundColor: "#111827", color: "#fff", }}
+                    >+ เพิ่มภารกิจ
+                    </button>
                 </div>
             </div>
 
             {/* ส่วนตาราง */}
-            <div style={{ margin: "10px auto", padding: "0 24px" }}>
+            <div style={{ margin: "10px auto", padding: "0 24px", overflowX: "auto" }}>
                 <table className="mission-table">
                     <thead style={{ backgroundColor: "#c0c0c0" }}>
                         <tr>
@@ -210,18 +240,61 @@ export const MissionTable: React.FC = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {pagination.map((item) =>
-                            <tr key={item.id}>
-                                <td style={{ overflowWrap: "anywhere" }}>{item.idMission}</td>
-                                <td style={{ overflowWrap: "anywhere" }}>{item.missionName}</td>
-                                <td style={{ overflowWrap: "anywhere" }}>{item.drone}</td>
-                                <td style={{ overflowWrap: "anywhere" }}>{item.startAt} <br />
-                                    {item.endAt}
+                        {loading ? (
+                            Array.from({ length: 5 }).map((_, idx) => (
+                                <tr key={idx}>
+                                    {Array.from({ length: 7 }).map((__, colIdx) => (
+                                        <td key={colIdx} style={{ padding: "12px", margin: "0 auto" }}>
+                                            <div className="skeleton" style={{ margin: "0 auto" }} />
+                                        </td>
+                                    ))}
+                                </tr>
+                            ))
+                        ) : errorData ? (
+                            <tr>
+                                <td colSpan={7} style={{ padding: "24px", textAlign: "center" }}>
+                                    <p style={{ marginBottom: "10px" }}>ไม่สามารถโหลดข้อมูลภารกิจได้</p>
+                                    <button type="button" onClick={fetchData} className="btn">ลองใหม่</button>
                                 </td>
-                                <td style={{ overflowWrap: "anywhere" }}>{formatDuration(item.duration_seconds)}</td>
-                                <td style={{ overflowWrap: "anywhere" }}><span className={`statusBadge--${item.status}`}>{item.status}</span></td>
-                                <td><button type="button" onClick={() => { setEditingMission(item); setOpenModal(true); }}>แก้ไข</button></td>
                             </tr>
+                        ) : pagination.length === 0 ? (
+                            <tr>
+                                <td colSpan={7} style={{ padding: "24px", textAlign: "center" }}>
+                                    {missionData.length === 0 ? (
+                                        <>
+                                            <p style={{ marginBottom: "10px" }}>ยังไม่มีข้อมูลภารกิจในระบบ</p>
+                                            <button type="button" className="btn" onClick={() => { setOpenModal(true); setEditingMission(null); }}>
+                                                + เพิ่มภารกิจแรก
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <p style={{ marginBottom: "10px" }}>ไม่พบภารกิจที่ตรงกับเงื่อนไขการค้นหาหรือตัวกรอง</p>
+                                            <button type="button" className="btn" onClick={resetFilter}>ล้างตัวกรอง</button>
+                                        </>
+                                    )}
+                                </td>
+                            </tr>
+                        ) : (
+                            pagination.map((item) =>
+                                <tr key={item.id}>
+                                    <td >{item.idMission}</td>
+                                    <td >{item.missionName}</td>
+                                    <td >{item.drone}</td>
+                                    <td >{item.startAt} <br />
+                                        {item.endAt}
+                                    </td>
+                                    <td >{formatDuration(item.duration_seconds)}</td>
+                                    <td ><span className={`statusBadge--${item.status}`}>{item.status}</span></td>
+                                    <td>
+                                        <button type="button" className="btn" onClick={() => { setEditingMission(item); setOpenModal(true); }}
+                                            style={{ backgroundColor: "#efcc00", fontSize: "12px" }}
+                                        >
+                                            แก้ไข
+                                        </button>
+                                    </td>
+                                </tr>
+                            )
                         )}
                     </tbody>
                 </table>
