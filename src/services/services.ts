@@ -1,5 +1,5 @@
 import {mockData} from "@/component/data/mockMissions";
-import { Mission } from "@/component/interface/interface";
+import { Mission } from "@/interface/interface";
 
 let missionsData: Mission[] = [...mockData]
 
@@ -20,13 +20,13 @@ export async function getAllMissions(shouldError = false): Promise<Mission[]> {
 }
 
 export async function addMission(newItem: Mission): Promise<Mission> {
-  await wait(500); 
+  await wait(2000); 
   missionsData.unshift(newItem);
   return newItem;
 }
 
 export async function editMission(updatedItem: Mission): Promise<Mission> {
-  await wait(500);
+  await wait(2000);
   missionsData = missionsData.map((item) => {
     if (item.id === updatedItem.id) {
       return updatedItem;

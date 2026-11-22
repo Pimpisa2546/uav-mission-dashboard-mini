@@ -1,4 +1,4 @@
-import MissionTable from "@/component/page/missionTable";
+import MissionTable from "@/page/missionTable";
 
 export default function MissionPage() {
   return (
