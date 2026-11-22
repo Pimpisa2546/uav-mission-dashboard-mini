@@ -228,14 +228,14 @@ export const MissionTable: React.FC = () => {
             </div>
             {/* ส่วนแบ่งหน้า */}
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                <button type="button" onClick={handlePrevPage} disabled={currentPage == 1}>ย้อนกลับ</button>
+                <button type="button" onClick={handlePrevPage} disabled={currentPage === 1}>ย้อนกลับ</button>
                 {pages.map((item) =>
                     <button key={item} onClick={() => setCurrentPage(item)} disabled={currentPage === item}>{item}</button>
                 )}
                 <button type="button" onClick={handleNextPage} disabled={currentPage >= totalPages}>ถัดไป</button>
             </div>
 
-            <Modal open={openModal} >
+            <Modal open={openModal} onClose={closeModal}>
                 <MissionForm onCreate={handleAddMission} defaultData={editingMission} onUpdate={handleEditMission} onClose={closeModal} />
             </Modal>
 
