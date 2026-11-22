@@ -7,7 +7,10 @@
 
 .table-scroll-wrapper {
   width: 100%;
+  max-height: calc(100vh - 260px);
+  min-height: 220px;
   overflow-x: auto;
+  overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   box-sizing: border-box;
 }
