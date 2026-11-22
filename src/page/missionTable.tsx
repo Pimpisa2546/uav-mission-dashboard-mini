@@ -1,11 +1,12 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react"
 import { Mission } from "../interface/interface"
-import { getAllMissions, editMission } from "@/services/services";
+import { getAllMissions } from "@/services/services";
 import "./missionTable.css"
 import { useSearchParams, useRouter } from "next/navigation";
 import { Modal } from "@/component/Modal"
 import { MissionForm } from "@/component/missionForm"
+import Link from "next/link";
 
 export const MissionTable: React.FC = () => {
     const [missionData, setMissionData] = useState<Mission[]>([]);
@@ -42,20 +43,6 @@ export const MissionTable: React.FC = () => {
         try {
             const dataMission = await getAllMissions();
             setMissionData(dataMission);
-        } catch (err) {
-            console.error(err);
-            setErrorData(true);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const fetchDataError = async () => {
-        setErrorData(false);
-        setLoading(true);
-        try {
-            await new Promise((resolve) => setTimeout(resolve, 5000));
-            throw new Error("mock network error");
         } catch (err) {
             console.error(err);
             setErrorData(true);
@@ -179,6 +166,10 @@ export const MissionTable: React.FC = () => {
         return parts.length > 0 ? parts.join(" ") : "0s";
     };
 
+    const toggleSortOrder = () => {
+        setSortOrder((prev) => (prev === "desc" ? "asc" : "desc"));
+    };
+
     const resetFilter = () => {
         setSearch("");
         setDebounce("");
@@ -192,15 +183,6 @@ export const MissionTable: React.FC = () => {
             <div className="row"
                 style={{ display: "flex", flexWrap: "wrap", backgroundColor: "#f9fafb", margin: "10px 24px", alignItems: "center", padding: "12px 24px", border: "1px solid #e5e7eb", }}
             >
-                <div className="col" style={{ flex: "0 0 auto" }}>
-                    <div style={{ display: "inline-flex", gap: "5px", alignItems: "center" }}>
-                        <input type="radio" id="desc" name="sortOrder" onChange={() => setSortOrder("desc")} checked={sortOrder === "desc"} />
-                        <label htmlFor="desc">ใหม่เก่า</label>
-
-                        <input type="radio" id="asc" name="sortOrder" onChange={() => setSortOrder("asc")} checked={sortOrder === "asc"} />
-                        <label htmlFor="asc">เก่าใหม่</label>
-                    </div>
-                </div>
                 <div className="col" style={{ flex: "1 1 220px" }}>
                     <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="ค้นหาชื่อภารกิจ/โดรน"
                         style={{ display: "flex", padding: "6px 10px", borderRadius: "6px", border: "1px solid #d1d5db", width: "100%", boxSizing: "border-box", }}
@@ -226,14 +208,19 @@ export const MissionTable: React.FC = () => {
             </div>
 
             {/* ส่วนตาราง */}
-            <div className="table-scroll-wrapper" style={{ margin: "10px auto", padding: "0 24px"}}>
+            <div className="table-scroll-wrapper" style={{ margin: "10px auto", padding: "0 24px" }}>
                 <table className="mission-table">
                     <thead style={{ backgroundColor: "#c0c0c0" }}>
                         <tr>
                             <th>รหัสภารกิจ</th>
                             <th>ชื่อภารกิจ</th>
                             <th>ชื่อโดรน</th>
-                            <th>วันและเวลาที่บิน</th>
+                            <th>
+                                <button type="button" onClick={toggleSortOrder}
+                                    style={{ background: "transparent", border: "none", cursor: "pointer", alignItems: "center",fontWeight:700 }}>
+                                    <span>วันและเวลาที่บิน</span>
+                                    <span>{sortOrder === "desc" ? "↓ (ใหม่→เก่า)" : "↑ (เก่า→ใหม่)"}</span>
+                                </button></th>
                             <th>ระยะเวลาบิน</th>
                             <th>สถานะ</th>
                             <th>Action</th>
@@ -278,11 +265,12 @@ export const MissionTable: React.FC = () => {
                         ) : (
                             pagination.map((item) =>
                                 <tr key={item.id}>
-                                    <td >{item.idMission}</td>
+                                    <td >
+                                        <Link href={`/mission/${item.id}`}>{item.idMission}</Link>
+                                    </td>
                                     <td >{item.missionName}</td>
                                     <td >{item.drone}</td>
-                                    <td >{item.startAt} <br />
-                                        {item.endAt}
+                                    <td >{item.startAt} <br />{item.endAt}
                                     </td>
                                     <td >{formatDuration(item.duration_seconds)}</td>
                                     <td ><span className={`statusBadge--${item.status}`}>{item.status}</span></td>
